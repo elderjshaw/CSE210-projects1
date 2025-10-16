@@ -1,28 +1,81 @@
 using System;
 using System.Collections.Generic;
 
-class Journal
+public class Journal
 {
     public List<Entry> _entries = new List<Entry>();
+    
 
-    public void AddEntry(Entry newEntry) {}
-    public void DisplayAll() { }
-    public void SaveToFile(string filename) { }
-    public void LoadFromFile(string filename) { }
-
-    public void AddNewEntry()
+    public void AddEntry()
     {
-        Random random = new Random();
-        int index = random.Next(_prompts.Count);
-        string prompt = _prompts[index];
+        Entry userEntry = new Entry();
+        userEntry.generateDate();
+        userEntry.GeneratePrompt();
+        userEntry.getResponse();
+        _entries.Add(userEntry);
     }
 
-    List<string> _prompts = new List<string>()
+    public void DisplayEntries()
     {
-        "Who was the most interesting person I interacted with today?",
-        "What was the best part of my day?",
-        "How did I see the hand of the Lord in my life today?",
-        "What was the strongest emotion I felt today?",
-        "If I had one thing I could do over today, what would it be?"
-    };
+        foreach (Entry entry in _entries)
+        {
+            Console.WriteLine($"Date: {entry._date}");
+            Console.WriteLine($"Prompt: {entry._prompt}");
+            Console.WriteLine($"Response: {entry._response}");
+        }
+    }
+
+    public void SaveToFile(string filename)
+    {
+        using (StreamWriter outputFile = new StreamWriter(filename))
+        {
+            if (filename.EndsWith(".csv"))
+            {
+                foreach (Entry entry in _entries)
+                {
+                    outputFile.WriteLine($"{entry._date},{entry._prompt},{entry._response}");
+                }
+            }
+
+            else
+            {
+                foreach (Entry entry in _entries)
+                {
+                    outputFile.WriteLine($"Date: {entry._date}");
+                    outputFile.WriteLine($"Prompt: {entry._prompt}");
+                    outputFile.WriteLine($"Response: {entry._response}");
+                    outputFile.WriteLine();
+                }
+            }
+        }
+    }
+    
+    public void LoadFromFile(string filename)   //AI helped with this method
+    {
+        if (filename.EndsWith(".csv"))
+        {
+            string[] lines = System.IO.File.ReadAllLines(filename);
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(',');
+                if (parts.Length == 3)
+                {
+                    Entry entry = new Entry();
+                    entry._date = parts[0];
+                    entry._prompt = parts[1];
+                    entry._response = parts[2];
+                    _entries.Add(entry);
+                }
+            }
+        }
+
+        else
+        {
+            using (StreamReader reader = new StreamReader(filename))
+            {
+                String journalEntries = reader.ReadToEnd();
+                Console.Write(journalEntries);
+            }
+        }
+    }
 }
