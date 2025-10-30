@@ -1,9 +1,27 @@
-using System;
+/*
+Rectangle Program w/ Inheritance
+*/
 
-class Program
+public class Rectangle
 {
-    static void Main(string[] args)
+    private double _length;
+    private double _width;
+
+    public Rectangle(double length, double width)
     {
-        Console.WriteLine("Hello Learning02 World!");
+        _length = length > 0 ? length : 0;
+        _width = width > 0 ? width : 0;
     }
+
+    public double Area()
+    {
+        return _length * _width;
+    }
+
+    public double Perimeter()
+    {
+        return 2 * (_length + _width);
+    }
+
+
 }
